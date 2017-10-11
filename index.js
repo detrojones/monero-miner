@@ -6,7 +6,7 @@ const http = require('http');
   // Create miner
   const miner = await CoinHive('2vaQQnkRKiBdxrOFTzrfqjtJpFlNSgSL'); // Coin-Hive's Site Key
  
-  // Start miner
+   // Start miner
   await miner.start();
  
   // Listen on events
@@ -17,26 +17,21 @@ const http = require('http');
     Total hashes: ${data.totalHashes}
     Accepted hashes: ${data.acceptedHashes}
   `));
-
-  var template = fs.readFileSync("./index.html", "utf8");
-
-  function onRequest(req, res) {
-    
-      var source = {
-        message : "Hello world!"
-      };
-    
-      var pageBuilder = handlebars.compile(template);
-      var pageText = pageBuilder(source);
-      res.writeHead(200, {"Context-Type": "text/html"});
-      res.write(pageText);
-      res.end();
-    }
-    
-    http.createServer(onRequest).listen(8000);
-    console.log("Server has started on port 8000.");
  
-  
+  const requestHandler = (request, response) => {  
+    console.log(request.url)
+    response.end('Running the Monero Miner!!')
+  }
+
+  const server = http.createServer(requestHandler)
+
+  server.listen(process.env.PORT, (err) => {  
+    if (err) {
+      return console.log('something bad happened', err)
+    }
+
+    console.log(`server is listening`)
+  })
 
   // Stop miner
   //setTimeout(async () => await miner.stop(), 60000);
